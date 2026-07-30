@@ -1,0 +1,12 @@
+{
+  "name": "fullstack-root",
+  "version": "1.0.0",
+  "description": "Root package.json for concurrently running frontend and backend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm start --prefix backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
