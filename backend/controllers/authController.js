@@ -13,7 +13,7 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role: reqRole } = req.body;
 
     // Check if user exists
     let user = await User.findOne({ email });
@@ -21,8 +21,11 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, error: 'User already exists' });
     }
 
-    // Determine role (first user to use admin@devskills.com becomes admin)
-    const role = email.toLowerCase() === 'admin@devskills.com' ? 'admin' : 'user';
+    // Determine role (use requested role, fallback to 'user', but keep admin@devskills.com check)
+    let role = reqRole || 'user';
+    if (email.toLowerCase() === 'admin@devskills.com') {
+      role = 'admin';
+    }
 
     user = await User.create({
       name,
