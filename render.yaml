@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: fullstack-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false # Requires manual entry in the Render dashboard
