@@ -237,7 +237,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (!currentUser || currentUser.role !== 'admin') {
+  if (!currentUser || !['admin', 'hr', 'owner'].includes(currentUser.role)) {
     return <Navigate to="/dashboard" replace />;
   }
 
