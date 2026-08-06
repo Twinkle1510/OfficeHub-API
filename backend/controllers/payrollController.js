@@ -47,7 +47,7 @@ exports.generatePayroll = async (req, res) => {
 // @access  Private
 exports.getMyPayslips = async (req, res) => {
   try {
-    const slips = await Payroll.find({ user: req.user.id }).sort({ month: -1 });
+    const slips = await Payroll.find({ user: req.user.id }).sort({ month: -1 }).lean();
     res.status(200).json({ success: true, data: slips });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -59,7 +59,7 @@ exports.getMyPayslips = async (req, res) => {
 // @access  Private/Admin
 exports.getAllPayrolls = async (req, res) => {
   try {
-    const payrolls = await Payroll.find().populate('user', 'name email role').sort({ createdAt: -1 });
+    const payrolls = await Payroll.find().populate('user', 'name email role').sort({ createdAt: -1 }).lean();
     res.status(200).json({ success: true, data: payrolls });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

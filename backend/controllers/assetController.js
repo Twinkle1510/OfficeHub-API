@@ -7,9 +7,9 @@ exports.getAssets = async (req, res) => {
   try {
     let assets;
     if (['admin', 'hr', 'owner'].includes(req.user.role)) {
-      assets = await Asset.find().populate('assignedUser', 'name email role').sort({ createdAt: -1 });
+      assets = await Asset.find().populate('assignedUser', 'name email role').sort({ createdAt: -1 }).lean();
     } else {
-      assets = await Asset.find({ assignedUser: req.user.id }).sort({ createdAt: -1 });
+      assets = await Asset.find({ assignedUser: req.user.id }).sort({ createdAt: -1 }).lean();
     }
     res.status(200).json({ success: true, data: assets });
   } catch (error) {

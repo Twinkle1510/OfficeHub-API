@@ -10,8 +10,8 @@ import { syllabusData } from '../data/syllabus';
 import Swal from 'sweetalert2';
 
 const Dashboard = () => {
-  const [skills, setSkills] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [skills, setSkills] = useState(() => JSON.parse(sessionStorage.getItem('user_skills') || '[]'));
+  const [loading, setLoading] = useState(() => !sessionStorage.getItem('user_skills'));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTask, setNewTask] = useState({ category: '', task: '', subTasks: [] });
   const [selectedSkill, setSelectedSkill] = useState(null);
@@ -30,10 +30,11 @@ const Dashboard = () => {
   const fetchSkills = async () => {
     try {
       const res = await api.get('/skills');
-      setSkills(res.data.data);
+      const data = res.data.data;
+      setSkills(data);
+      sessionStorage.setItem('user_skills', JSON.stringify(data));
     } catch (err) {
       console.error(err);
-      Swal.fire('Error', 'Error fetching skills', 'error');
     } finally {
       setLoading(false);
     }

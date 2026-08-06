@@ -31,7 +31,7 @@ exports.applyLeave = async (req, res) => {
 // @access  Private
 exports.getMyLeaveRequests = async (req, res) => {
   try {
-    const requests = await Leave.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const requests = await Leave.find({ user: req.user.id }).sort({ createdAt: -1 }).lean();
     res.status(200).json({ success: true, data: requests });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -43,7 +43,7 @@ exports.getMyLeaveRequests = async (req, res) => {
 // @access  Private/Admin
 exports.getAllLeaveRequests = async (req, res) => {
   try {
-    const requests = await Leave.find().populate('user', 'name email role').sort({ createdAt: -1 });
+    const requests = await Leave.find().populate('user', 'name email role').sort({ createdAt: -1 }).lean();
     res.status(200).json({ success: true, data: requests });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

@@ -13,12 +13,12 @@ import Swal from 'sweetalert2';
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('directory'); // 'directory' | 'payroll' | 'leaves' | 'assets' | 'announcements'
   
-  // Data States
-  const [users, setUsers] = useState([]);
-  const [payrolls, setPayrolls] = useState([]);
-  const [leaves, setLeaves] = useState([]);
-  const [assets, setAssets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Data States with Instant Local Cache
+  const [users, setUsers] = useState(() => JSON.parse(sessionStorage.getItem('admin_users') || '[]'));
+  const [payrolls, setPayrolls] = useState(() => JSON.parse(sessionStorage.getItem('admin_payrolls') || '[]'));
+  const [leaves, setLeaves] = useState(() => JSON.parse(sessionStorage.getItem('admin_leaves') || '[]'));
+  const [assets, setAssets] = useState(() => JSON.parse(sessionStorage.getItem('admin_assets') || '[]'));
+  const [loading, setLoading] = useState(() => !sessionStorage.getItem('admin_users'));
 
   // User Progress Modal State
   const [selectedUser, setSelectedUser] = useState(null);
@@ -68,10 +68,21 @@ const AdminDashboard = () => {
         api.get('/assets').catch(() => ({ data: { data: [] } }))
       ]);
 
-      setUsers(Array.isArray(uRes.data?.data) ? uRes.data.data : []);
-      setPayrolls(Array.isArray(pRes.data?.data) ? pRes.data.data : []);
-      setLeaves(Array.isArray(lRes.data?.data) ? lRes.data.data : []);
-      setAssets(Array.isArray(aRes.data?.data) ? aRes.data.data : []);
+      const fetchedUsers = Array.isArray(uRes.data?.data) ? uRes.data.data : [];
+      const fetchedPayrolls = Array.isArray(pRes.data?.data) ? pRes.data.data : [];
+      const fetchedLeaves = Array.isArray(lRes.data?.data) ? lRes.data.data : [];
+      const fetchedAssets = Array.isArray(aRes.data?.data) ? aRes.data.data : [];
+
+      setUsers(fetchedUsers);
+      setPayrolls(fetchedPayrolls);
+      setLeaves(fetchedLeaves);
+      setAssets(fetchedAssets);
+
+      // Save to sessionStorage for 0ms instant next load
+      sessionStorage.setItem('admin_users', JSON.stringify(fetchedUsers));
+      sessionStorage.setItem('admin_payrolls', JSON.stringify(fetchedPayrolls));
+      sessionStorage.setItem('admin_leaves', JSON.stringify(fetchedLeaves));
+      sessionStorage.setItem('admin_assets', JSON.stringify(fetchedAssets));
     } catch (err) {
       console.error('Failed to load admin master data:', err);
     } finally {

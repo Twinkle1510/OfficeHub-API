@@ -140,7 +140,7 @@ exports.updateUserProfile = async (req, res) => {
 // @access  Private/Admin
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select('-password');
+    const users = await User.find({}).select('-password').lean();
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -177,7 +177,7 @@ exports.deleteUser = async (req, res) => {
 exports.getUserSkills = async (req, res) => {
   try {
     const Skill = require('../models/Skill');
-    const skills = await Skill.find({ user: req.params.id }).sort({ createdAt: -1 });
+    const skills = await Skill.find({ user: req.params.id }).sort({ createdAt: -1 }).lean();
     res.status(200).json({ success: true, data: skills });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

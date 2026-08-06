@@ -5,7 +5,7 @@ const Project = require('../models/Project');
 // @access  Private
 exports.getProjects = async (req, res) => {
   try {
-    const projects = await Project.find().populate('assignedTo', 'name role').sort({ createdAt: -1 });
+    const projects = await Project.find().populate('assignedTo', 'name role').sort({ createdAt: -1 }).lean();
     res.status(200).json({ success: true, data: projects });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

@@ -6,7 +6,7 @@ const Activity = require('../models/Activity');
 // @access  Private
 exports.getSkills = async (req, res) => {
   try {
-    const skills = await Skill.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const skills = await Skill.find({ user: req.user.id }).sort({ createdAt: -1 }).lean();
     res.status(200).json({ success: true, count: skills.length, data: skills });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
