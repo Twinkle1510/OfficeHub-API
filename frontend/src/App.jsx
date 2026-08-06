@@ -12,6 +12,7 @@ import Landing from './pages/Landing';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
 import CompanyHub from './pages/CompanyHub';
+import LeaveManagement from './pages/LeaveManagement';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -79,6 +80,14 @@ function AppLayout() {
               element={
                 <ProtectedRoute>
                   <CompanyHub />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/leave" 
+              element={
+                <ProtectedRoute>
+                  <LeaveManagement />
                 </ProtectedRoute>
               } 
             />

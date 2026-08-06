@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Flame, MessageSquare, Trophy, User, Settings as SettingsIcon, LogOut, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Flame, MessageSquare, Trophy, User, Settings as SettingsIcon, LogOut, ShieldAlert, Calendar } from 'lucide-react';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -50,6 +50,11 @@ const Sidebar = () => {
           <Link to="/leaderboard" className={`sidebar-link ${isActive('/leaderboard') ? 'active' : ''}`}>
             <Trophy size={18} style={{ color: isActive('/leaderboard') ? '#fff' : 'var(--amber)' }} />
             <span>Leaderboard</span>
+          </Link>
+
+          <Link to="/leave" className={`sidebar-link ${isActive('/leave') ? 'active' : ''}`}>
+            <Calendar size={18} style={{ color: isActive('/leave') ? '#fff' : 'var(--emerald)' }} />
+            <span>Leave System</span>
           </Link>
 
           <Link to="/profile" className={`sidebar-link ${isActive('/profile') ? 'active' : ''}`}>

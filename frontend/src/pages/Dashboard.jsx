@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveCont
 import api from '../api';
 import SkillCard from '../components/SkillCard';
 import SkillDetailsModal from '../components/SkillDetailsModal';
+import AttendanceWidget from '../components/AttendanceWidget';
 import { syllabusData } from '../data/syllabus';
 import Swal from 'sweetalert2';
 
@@ -94,7 +95,6 @@ const Dashboard = () => {
     }
   };
 
-  // Filter and Search Logic
   const filteredSkills = skills.filter(skill => {
     const matchesSearch = skill.task.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           skill.category.toLowerCase().includes(searchQuery.toLowerCase());
@@ -107,13 +107,11 @@ const Dashboard = () => {
     return true;
   });
 
-  // KPI Calculations
   const completedCount = skills.filter(s => s.status === 'completed').length;
   const inProgressCount = skills.filter(s => s.status === 'in-progress').length;
   const totalCount = skills.length;
   const completionRate = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // Analytics computations
   const statusStats = [
     { name: 'Pending', count: skills.filter(s => s.status === 'pending').length },
     { name: 'In Progress', count: inProgressCount },
@@ -131,7 +129,7 @@ const Dashboard = () => {
     <div className="animate-fade-in">
       
       {/* Workspace Dashboard Header */}
-      <div className="dashboard-header">
+      <div className="dashboard-header" style={{ marginBottom: '1.5rem' }}>
         <div>
           <h1 className="dashboard-title">
             Developer Workspace <span className="text-gradient">.bento</span>
@@ -141,6 +139,11 @@ const Dashboard = () => {
         <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
           <Plus size={18} /> Add Skill Task
         </button>
+      </div>
+
+      {/* Attendance & Punch In/Out Shift Widget */}
+      <div style={{ marginBottom: '1.75rem' }}>
+        <AttendanceWidget />
       </div>
 
       {/* Bento Grid Container */}

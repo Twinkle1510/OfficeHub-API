@@ -10,6 +10,8 @@ const skillRoutes = require('./routes/skillRoutes');
 const userRoutes = require('./routes/userRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const attendanceRoutes = require('./routes/attendanceRoutes');
+const leaveRoutes = require('./routes/leaveRoutes');
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/leave', leaveRoutes);
 
 // Root endpoint for testing
 app.get('/', (req, res) => {
