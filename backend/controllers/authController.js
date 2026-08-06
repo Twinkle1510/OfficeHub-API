@@ -106,3 +106,16 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// @desc    Seed 10 sample entries across system
+// @route   POST /api/auth/seed-demo
+// @access  Private
+exports.seedDemo = async (req, res) => {
+  try {
+    const { seedSampleData } = require('../seedData');
+    await seedSampleData();
+    res.status(200).json({ success: true, message: '10 Sample entries seeded successfully!' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

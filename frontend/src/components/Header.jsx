@@ -1,6 +1,8 @@
 import React from 'react';
-import { Search, Sparkles, Bell } from 'lucide-react';
+import { Search, Sparkles, Bell, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api';
+import Swal from 'sweetalert2';
 
 const Header = () => {
   const token = localStorage.getItem('token');
@@ -8,6 +10,23 @@ const Header = () => {
   const navigate = useNavigate();
 
   if (!token) return null;
+
+  const handleSeedDemoData = async () => {
+    try {
+      await api.post('/auth/seed-demo');
+      Swal.fire({
+        title: 'Demo Data Loaded! 🎉',
+        text: '10 genuine sample entries created across Skills, Kanban Sprint Board, Company Assets & Attendance!',
+        icon: 'success',
+        confirmButtonText: 'View Workspace'
+      }).then(() => {
+        window.location.reload();
+      });
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Notice', 'Sample data loaded or already exists in database.', 'info');
+    }
+  };
 
   return (
     <header className="top-header">
@@ -23,6 +42,28 @@ const Header = () => {
 
       {/* Header Actions */}
       <div className="header-actions">
+        {/* Seed 10 Demo Items Button */}
+        <button
+          onClick={handleSeedDemoData}
+          title="Populate 10 sample test entries across system"
+          style={{
+            background: 'rgba(99, 102, 241, 0.15)',
+            border: '1px solid var(--border-highlight)',
+            color: 'var(--primary)',
+            padding: '0.4rem 0.85rem',
+            borderRadius: '20px',
+            fontSize: '0.775rem',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          <Database size={13} /> ⚡ Load 10 Demo Entries
+        </button>
+
         <div style={{
           display: 'flex',
           alignItems: 'center',

@@ -85,6 +85,10 @@ const connectDB = async () => {
       console.log(`🔥 Connection String: ${uri}`);
       console.log('======================================================\n');
     }
+
+    // Auto Seed 10 Genuine Sample Records for testing system
+    const { seedSampleData } = require('./seedData');
+    await seedSampleData();
     
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
