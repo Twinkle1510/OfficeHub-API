@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { Activity, CheckCircle, PlayCircle, Heart, MessageCircle, Send } from 'lucide-react';
+import { Activity, CheckCircle2, PlayCircle, Heart, MessageCircle, Send, Flame } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 const CommunityFeed = () => {
@@ -30,7 +30,6 @@ const CommunityFeed = () => {
   const handleLike = async (id) => {
     try {
       const res = await api.put(`/activities/${id}/like`);
-      // Update locally
       setActivities(activities.map(act => act._id === id ? { ...act, likes: res.data.data.likes } : act));
     } catch (err) {
       console.error('Failed to like', err);
@@ -53,119 +52,127 @@ const CommunityFeed = () => {
   };
 
   return (
-    <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div className="dashboard-header" style={{ marginBottom: '2rem' }}>
+    <div className="animate-fade-in" style={{ maxWidth: '820px', margin: '0 auto' }}>
+      
+      {/* Header */}
+      <div className="dashboard-header" style={{ marginBottom: '2.5rem' }}>
         <div>
-          <h1 className="dashboard-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Activity color="var(--primary)" /> Live Community Feed
+          <h1 className="dashboard-title" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Flame size={32} color="var(--rose)" /> Live Community Feed
           </h1>
-          <p className="dashboard-subtitle">See what other developers are learning right now.</p>
+          <p className="dashboard-subtitle">Real-time learning updates and milestones across your organization.</p>
         </div>
       </div>
 
       {loading ? (
-        <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Loading live feed...</p>
+        <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
+          <p>Loading live activity feed...</p>
+        </div>
       ) : activities.length === 0 ? (
-        <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-muted)' }}>No activities yet. Start learning to see updates here!</p>
+        <div className="empty-state">
+          <Activity size={48} style={{ marginBottom: '1rem', color: 'var(--primary)' }} />
+          <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-main)' }}>No activity recorded yet</h3>
+          <p>Start or complete a skill task to publish your first activity milestone!</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {activities.map((act) => (
-            <div key={act._id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-              <div style={{ marginTop: '0.2rem' }}>
-                {act.action === 'started' ? (
-                  <PlayCircle color="var(--primary)" size={24} />
-                ) : (
-                  <CheckCircle color="var(--success)" size={24} />
-                )}
+            <div key={act._id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
+              
+              <div style={{
+                width: '42px', height: '42px', borderRadius: '12px',
+                background: act.action === 'started' ? 'rgba(99, 102, 241, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                border: act.action === 'started' ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                color: act.action === 'started' ? 'var(--primary)' : 'var(--emerald)'
+              }}>
+                {act.action === 'started' ? <PlayCircle size={22} /> : <CheckCircle2 size={22} />}
               </div>
+
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>
-                  <strong style={{ color: 'var(--text-main)' }}>{act.user?.name || 'Anonymous User'}</strong>
+                <p style={{ fontSize: '1.05rem', marginBottom: '0.4rem', lineHeight: 1.4 }}>
+                  <strong style={{ color: 'var(--text-main)', fontWeight: 700 }}>{act.user?.name || 'Anonymous User'}</strong>
                   <span style={{ color: 'var(--text-muted)' }}>
-                    {act.action === 'started' ? ' started learning ' : ' just completed '}
+                    {act.action === 'started' ? ' started learning ' : ' completed '}
                   </span>
-                  <strong style={{ color: act.action === 'started' ? 'var(--primary)' : 'var(--success)' }}>
+                  <strong style={{ color: act.action === 'started' ? 'var(--primary)' : 'var(--emerald)', fontWeight: 700 }}>
                     {act.skillTitle}
                   </strong>
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
-                  <span style={{ color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '0.1rem 0.5rem', borderRadius: '4px' }}>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.825rem' }}>
+                  <span className="skill-category-badge">
                     {act.category}
                   </span>
-                  <span style={{ color: 'var(--text-muted)' }}>
+                  <span style={{ color: 'var(--text-subtle)' }}>
                     {formatDistanceToNow(new Date(act.createdAt), { addSuffix: true })}
                   </span>
                 </div>
                 
                 {/* Interactions */}
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--glass-border)', paddingTop: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '1.25rem', marginTop: '1.25rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.85rem' }}>
                   <button 
                     onClick={() => handleLike(act._id)}
                     style={{ 
-                      background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', 
-                      color: (act.likes && act.likes.includes(user?._id)) ? 'var(--danger)' : 'var(--text-muted)', 
-                      cursor: 'pointer', fontSize: '0.9rem', transition: 'color 0.2s'
+                      background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '0.45rem', 
+                      color: (act.likes && act.likes.includes(user?._id)) ? 'var(--rose)' : 'var(--text-muted)', 
+                      cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, transition: 'color 0.2s'
                     }}
                   >
-                    <Heart size={18} fill={(act.likes && act.likes.includes(user?._id)) ? 'var(--danger)' : 'none'} />
-                    {act.likes ? act.likes.length : 0}
+                    <Heart size={17} fill={(act.likes && act.likes.includes(user?._id)) ? 'var(--rose)' : 'none'} />
+                    {act.likes ? act.likes.length : 0} Likes
                   </button>
+                  
                   <button 
                     onClick={() => toggleComments(act._id)}
                     style={{ 
-                      background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', 
+                      background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '0.45rem', 
                       color: openComments[act._id] ? 'var(--primary)' : 'var(--text-muted)', 
-                      cursor: 'pointer', fontSize: '0.9rem', transition: 'color 0.2s'
+                      cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, transition: 'color 0.2s'
                     }}
                   >
-                    <MessageCircle size={18} />
-                    {act.comments ? act.comments.length : 0}
+                    <MessageCircle size={17} />
+                    {act.comments ? act.comments.length : 0} Comments
                   </button>
                 </div>
 
                 {/* Comments Section */}
                 {openComments[act._id] && (
-                  <div style={{ marginTop: '1rem', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
+                  <div style={{ marginTop: '1rem', background: 'rgba(15, 23, 42, 0.7)', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
                     {act.comments && act.comments.length > 0 ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '1.25rem' }}>
                         {act.comments.map((comment, i) => (
-                          <div key={i} style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
-                            <strong style={{ color: 'var(--text-main)' }}>{comment.user?.name}:</strong>
-                            <span style={{ color: 'var(--text-muted)' }}>{comment.text}</span>
+                          <div key={i} style={{ fontSize: '0.875rem', display: 'flex', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '0.6rem 0.85rem', borderRadius: '8px' }}>
+                            <strong style={{ color: 'var(--primary)' }}>{comment.user?.name}:</strong>
+                            <span style={{ color: 'var(--text-main)' }}>{comment.text}</span>
                           </div>
                         ))}
                       </div>
                     ) : (
                       <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>No comments yet. Be the first to reply!</p>
                     )}
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
                       <input 
                         type="text" 
                         value={commentText[act._id] || ''}
                         onChange={(e) => setCommentText({ ...commentText, [act._id]: e.target.value })}
                         placeholder="Write a comment..." 
-                        style={{ 
-                          flex: 1, padding: '0.6rem 1rem', borderRadius: '20px', 
-                          border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', 
-                          color: 'var(--text-main)', outline: 'none'
-                        }} 
+                        className="form-input"
+                        style={{ padding: '0.6rem 1rem', fontSize: '0.875rem' }} 
                         onKeyDown={(e) => e.key === 'Enter' && handleAddComment(act._id)}
                       />
                       <button 
                         onClick={() => handleAddComment(act._id)}
-                        style={{ 
-                          background: 'var(--primary)', border: 'none', color: '#fff', 
-                          width: '36px', height: '36px', borderRadius: '50%', 
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
-                        }}
+                        className="btn btn-primary"
+                        style={{ padding: '0.6rem 1rem', borderRadius: '10px' }}
                       >
-                        <Send size={16} />
+                        <Send size={15} />
                       </button>
                     </div>
                   </div>
                 )}
+
               </div>
             </div>
           ))}
