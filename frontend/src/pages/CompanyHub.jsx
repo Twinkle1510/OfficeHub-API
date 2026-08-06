@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Send, MessageSquare, ShieldCheck } from 'lucide-react';
+import { Users, Send, MessageSquare, ShieldCheck, Megaphone, Plus, BellRing } from 'lucide-react';
 import api from '../api';
 import Swal from 'sweetalert2';
 
@@ -9,8 +9,16 @@ const CompanyHub = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  
+  // Company Announcement Broadcast State
+  const [announcements, setAnnouncements] = useState([
+    { id: 1, author: 'HR Department', role: 'HR', text: '📢 Welcome to the Q3 Sprint! Please review your assigned skill targets in the dashboard.', time: '2 hours ago' }
+  ]);
+  const [newAnnouncement, setNewAnnouncement] = useState('');
+  const [isPostingAnnouncement, setIsPostingAnnouncement] = useState(false);
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
+  const isHRorAdmin = ['admin', 'hr', 'owner'].includes(currentUser?.role);
 
   useEffect(() => {
     fetchUsers();
@@ -61,16 +69,97 @@ const CompanyHub = () => {
     }
   };
 
+  const handlePostAnnouncement = (e) => {
+    e.preventDefault();
+    if (!newAnnouncement.trim()) return;
+
+    const created = {
+      id: Date.now(),
+      author: currentUser.name,
+      role: currentUser.role.toUpperCase(),
+      text: newAnnouncement,
+      time: 'Just now'
+    };
+
+    setAnnouncements([created, ...announcements]);
+    setNewAnnouncement('');
+    setIsPostingAnnouncement(false);
+    Swal.fire('Broadcast Sent!', 'Company announcement published to all members.', 'success');
+  };
+
   return (
     <div className="animate-fade-in">
-      <div className="dashboard-header">
+      
+      {/* Header */}
+      <div className="dashboard-header" style={{ marginBottom: '1.5rem' }}>
         <div>
           <h1 className="dashboard-title">Company Hub <span className="text-gradient">💬</span></h1>
-          <p className="dashboard-subtitle">Connect with HR, Admins, and teammates directly in real time.</p>
+          <p className="dashboard-subtitle">Direct employee messaging, HR support, and company announcements.</p>
         </div>
+        {isHRorAdmin && (
+          <button 
+            className="btn btn-primary" 
+            onClick={() => setIsPostingAnnouncement(!isPostingAnnouncement)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Megaphone size={18} /> {isPostingAnnouncement ? 'Close Broadcast' : 'Post Announcement'}
+          </button>
+        )}
       </div>
 
-      <div style={{ display: 'flex', gap: '1.5rem', height: '68vh', flexWrap: 'wrap' }}>
+      {/* HR Announcement Posting Form */}
+      {isPostingAnnouncement && (
+        <form onSubmit={handlePostAnnouncement} className="glass-panel" style={{ padding: '1.5rem', marginBottom: '1.5rem', border: '1px solid var(--border-highlight)' }}>
+          <h3 style={{ fontSize: '1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--violet)' }}>
+            <Megaphone size={18} /> Broadcast Announcement to All Employees
+          </h3>
+          <textarea 
+            className="form-input" 
+            rows={3} 
+            placeholder="Type company notice or HR message..."
+            value={newAnnouncement}
+            onChange={(e) => setNewAnnouncement(e.target.value)}
+            style={{ marginBottom: '1rem', resize: 'none' }}
+            required
+          />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+            <button type="button" className="btn btn-outline" onClick={() => setIsPostingAnnouncement(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Publish Announcement</button>
+          </div>
+        </form>
+      )}
+
+      {/* Announcements Banner List */}
+      {announcements.length > 0 && (
+        <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {announcements.map(ann => (
+            <div key={ann.id} style={{
+              background: 'rgba(168, 85, 247, 0.12)',
+              border: '1px solid rgba(168, 85, 247, 0.3)',
+              borderRadius: '14px',
+              padding: '1rem 1.25rem',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '1rem'
+            }}>
+              <div style={{ background: 'var(--gradient-primary)', padding: '0.5rem', borderRadius: '10px', color: '#fff', display: 'flex' }}>
+                <BellRing size={20} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.25rem' }}>
+                  <span style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--text-main)' }}>{ann.author}</span>
+                  <span className="skill-category-badge" style={{ fontSize: '0.65rem' }}>{ann.role}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginLeft: 'auto' }}>{ann.time}</span>
+                </div>
+                <p style={{ color: 'var(--text-main)', fontSize: '0.925rem' }}>{ann.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Messaging Grid */}
+      <div style={{ display: 'flex', gap: '1.5rem', height: '62vh', flexWrap: 'wrap' }}>
         
         {/* User List Sidebar */}
         <div className="glass-panel" style={{ width: '30%', minWidth: '260px', overflowY: 'auto', padding: '1.25rem' }}>
@@ -119,7 +208,7 @@ const CompanyHub = () => {
           )}
         </div>
 
-        {/* Chat Area */}
+        {/* Chat Viewport */}
         <div className="glass-panel" style={{ flex: 1, minWidth: '320px', display: 'flex', flexDirection: 'column', padding: '0' }}>
           {selectedUser ? (
             <>

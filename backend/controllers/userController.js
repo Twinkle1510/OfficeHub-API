@@ -200,7 +200,49 @@ exports.assignUserSkill = async (req, res) => {
       status: status || 'pending'
     });
 
+    // Log assignment activity
+    try {
+      const Activity = require('../models/Activity');
+      await Activity.create({
+        user: req.params.id,
+        action: 'started',
+        skillTitle: task,
+        category: category || 'Assigned'
+      });
+    } catch (e) {
+      console.error('Failed to create assignment activity log:', e);
+    }
+
     res.status(201).json({ success: true, data: skill });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// @desc    Update user role (Admin/HR only)
+// @route   PUT /api/users/:id/role
+// @access  Private/Admin
+exports.updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    const allowedRoles = ['employee', 'developer', 'tester', 'designer', 'hr', 'admin', 'owner'];
+    
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({ success: false, error: 'Invalid role specified' });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.status(200).json({ 
+      success: true, 
+      data: { _id: user._id, name: user.name, email: user.email, role: user.role } 
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -224,3 +266,4 @@ exports.deleteUserSkill = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+

@@ -51,6 +51,17 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      const res = await api.put(`/users/${userId}/role`, { role: newRole });
+      setUsers(users.map(u => u._id === userId ? { ...u, role: res.data.data.role } : u));
+      Swal.fire('Updated!', `Role updated to ${newRole.toUpperCase()}`, 'success');
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.response?.data?.error || 'Failed to update role', 'error');
+    }
+  };
+
   const handleDeleteUser = async (id, name) => {
     const result = await Swal.fire({
       title: 'Delete User?',
@@ -86,7 +97,6 @@ const AdminDashboard = () => {
       const skills = res.data.data;
       setUserSkills(skills);
 
-      // Generate Graph Data for the current month
       const start = startOfMonth(new Date());
       const end = endOfMonth(new Date());
       const days = eachDayOfInterval({ start, end });
@@ -247,9 +257,9 @@ const AdminDashboard = () => {
         <div>
           <h1 className="dashboard-title" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <Shield color="var(--primary)" size={32} />
-            Admin Dashboard
+            Company Administration & Roles
           </h1>
-          <p className="dashboard-subtitle">Manage users, view progress, and assign tasks.</p>
+          <p className="dashboard-subtitle">Manage employee directory, assign target tasks, update roles, and track deadlines.</p>
         </div>
       </div>
 
@@ -258,7 +268,7 @@ const AdminDashboard = () => {
       <div className="glass-panel" style={{ padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem', margin: 0 }}>
-            <Users size={20} /> Registered Users ({users.length})
+            <Users size={20} /> Company Directory ({users.length})
           </h2>
           <button 
             className="btn btn-primary" 
@@ -278,7 +288,7 @@ const AdminDashboard = () => {
                 <tr style={{ borderBottom: '1px solid var(--glass-border)', color: 'var(--text-muted)' }}>
                   <th style={{ padding: '1rem 0' }}>Name</th>
                   <th style={{ padding: '1rem 0' }}>Email</th>
-                  <th style={{ padding: '1rem 0' }}>Role</th>
+                  <th style={{ padding: '1rem 0' }}>Role & Permission</th>
                   <th style={{ padding: '1rem 0', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
@@ -288,16 +298,29 @@ const AdminDashboard = () => {
                     <td style={{ padding: '1rem 0', fontWeight: '500' }}>{u.name} {u._id === currentUser.id && '(You)'}</td>
                     <td style={{ padding: '1rem 0', color: 'var(--text-muted)' }}>{u.email}</td>
                     <td style={{ padding: '1rem 0' }}>
-                      <span style={{ 
-                        background: u.role === 'admin' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.05)',
-                        color: u.role === 'admin' ? 'var(--primary)' : 'var(--text-muted)',
-                        padding: '0.2rem 0.6rem',
-                        borderRadius: '12px',
-                        fontSize: '0.8rem',
-                        textTransform: 'uppercase'
-                      }}>
-                        {u.role}
-                      </span>
+                      <select
+                        value={u.role}
+                        onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                        disabled={u._id === currentUser.id}
+                        style={{
+                          background: 'rgba(15, 23, 42, 0.8)',
+                          color: (u.role === 'admin' || u.role === 'hr' || u.role === 'owner') ? 'var(--violet)' : 'var(--text-main)',
+                          border: '1px solid var(--border-light)',
+                          padding: '0.3rem 0.6rem',
+                          borderRadius: '8px',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          cursor: u._id === currentUser.id ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        <option value="employee">EMPLOYEE</option>
+                        <option value="developer">DEVELOPER</option>
+                        <option value="tester">TESTER</option>
+                        <option value="designer">DESIGNER</option>
+                        <option value="hr">HR</option>
+                        <option value="admin">ADMIN</option>
+                        <option value="owner">OWNER</option>
+                      </select>
                     </td>
                     <td style={{ padding: '1rem 0', textAlign: 'right' }}>
                       <button 

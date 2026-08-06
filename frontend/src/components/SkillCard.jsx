@@ -38,7 +38,18 @@ const SkillCard = ({ skill, onUpdate, onDelete, onOpenDetails }) => {
     <div className="skill-card">
       <div>
         <div className="skill-card-header">
-          <span className="skill-category-badge">{skill.category}</span>
+          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+            <span className="skill-category-badge">{skill.category}</span>
+            {skill.targetDate && skill.status !== 'completed' && new Date(skill.targetDate) < new Date() && (
+              <span style={{ 
+                fontSize: '0.7rem', fontWeight: 700, color: 'var(--rose)', 
+                background: 'rgba(244, 63, 94, 0.15)', border: '1px solid rgba(244, 63, 94, 0.3)', 
+                padding: '0.2rem 0.5rem', borderRadius: '6px' 
+              }}>
+                ⚠️ OVERDUE
+              </span>
+            )}
+          </div>
           
           {/* Status Badge */}
           <button 
