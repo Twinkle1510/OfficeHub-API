@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lock, Mail, ArrowRight, Shield } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Shield, Zap, Sparkles } from 'lucide-react';
 import api from '../api';
 
 const Login = () => {
@@ -11,6 +11,11 @@ const Login = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const fillDemo = (email, password) => {
+    setFormData({ email, password });
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -25,7 +30,7 @@ const Login = () => {
       navigate('/dashboard');
       window.location.reload();
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong');
+      setError(err.response?.data?.error || 'Invalid email or password');
     } finally {
       setLoading(false);
     }
@@ -46,7 +51,7 @@ const Login = () => {
         opacity: 0.4
       }}></div>
 
-      <div className="auth-card">
+      <div className="auth-card" style={{ maxWidth: '440px' }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{
             width: '48px', height: '48px', borderRadius: '12px',
@@ -61,6 +66,57 @@ const Login = () => {
         </div>
         
         {error && <div className="error-msg">{error}</div>}
+
+        {/* Demo Quick Fill Buttons */}
+        <div style={{
+          background: 'rgba(15, 20, 45, 0.8)',
+          border: '1px solid var(--border-highlight)',
+          borderRadius: '12px',
+          padding: '1rem',
+          marginBottom: '1.5rem'
+        }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--violet)', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <Zap size={14} /> 1-CLICK DEMO ACCOUNTS
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => fillDemo('admin@devskills.com', 'admin123')}
+              style={{
+                flex: 1, padding: '0.4rem 0.5rem', fontSize: '0.75rem', fontWeight: 700,
+                background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)',
+                color: 'var(--primary)', borderRadius: '8px', cursor: 'pointer'
+              }}
+            >
+              👑 Admin
+            </button>
+
+            <button
+              type="button"
+              onClick={() => fillDemo('hr@devskills.com', 'hr123456')}
+              style={{
+                flex: 1, padding: '0.4rem 0.5rem', fontSize: '0.75rem', fontWeight: 700,
+                background: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.3)',
+                color: 'var(--violet)', borderRadius: '8px', cursor: 'pointer'
+              }}
+            >
+              👔 HR
+            </button>
+
+            <button
+              type="button"
+              onClick={() => fillDemo('alex@devskills.com', 'employee123')}
+              style={{
+                flex: 1, padding: '0.4rem 0.5rem', fontSize: '0.75rem', fontWeight: 700,
+                background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: 'var(--emerald)', borderRadius: '8px', cursor: 'pointer'
+              }}
+            >
+              💻 Employee
+            </button>
+          </div>
+        </div>
           
         <form onSubmit={handleSubmit}>
           <div className="form-group">

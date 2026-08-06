@@ -7,11 +7,38 @@ const User = require('./models/User');
 
 exports.seedSampleData = async () => {
   try {
-    // Find an admin or first user
-    const adminUser = await User.findOne();
+    // 0. Ensure Default Admin & Demo Users Exist
+    let adminUser = await User.findOne({ email: 'admin@devskills.com' });
     if (!adminUser) {
-      console.log('No user found to associate sample entries.');
-      return;
+      console.log('Creating default Admin user: admin@devskills.com ...');
+      adminUser = await User.create({
+        name: 'System Admin',
+        email: 'admin@devskills.com',
+        password: 'admin123',
+        role: 'admin'
+      });
+    }
+
+    let hrUser = await User.findOne({ email: 'hr@devskills.com' });
+    if (!hrUser) {
+      console.log('Creating default HR user: hr@devskills.com ...');
+      await User.create({
+        name: 'HR Manager',
+        email: 'hr@devskills.com',
+        password: 'hr123456',
+        role: 'hr'
+      });
+    }
+
+    let empUser = await User.findOne({ email: 'alex@devskills.com' });
+    if (!empUser) {
+      console.log('Creating default Employee user: alex@devskills.com ...');
+      await User.create({
+        name: 'Alex Rivera',
+        email: 'alex@devskills.com',
+        password: 'employee123',
+        role: 'employee'
+      });
     }
 
     const userId = adminUser._id;
@@ -110,7 +137,7 @@ exports.seedSampleData = async () => {
       ]);
     }
 
-    console.log('✅ Sample data seeded successfully! (10 genuine items in Skills, Kanban, Assets, Leave)');
+    console.log('✅ Sample data seeded successfully! Default Admin: admin@devskills.com / admin123');
   } catch (err) {
     console.error('Error seeding sample data:', err);
   }
