@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Layers, Plus, ChevronRight, ChevronLeft, Trash2, Clock, ShieldCheck } from 'lucide-react';
+import { Layers, Plus, ChevronRight, ChevronLeft, Trash2, Clock, ShieldCheck, User } from 'lucide-react';
 import api from '../api';
 import Swal from 'sweetalert2';
 
 const ProjectKanban = () => {
   const [projects, setProjects] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', category: 'Development', priority: 'Medium', stage: 'backlog' });
+  const [form, setForm] = useState({ title: '', description: '', category: 'Development', priority: 'Medium', stage: 'backlog', assignedTo: '' });
 
   useEffect(() => {
-    fetchProjects();
+    fetchData();
   }, []);
 
-  const fetchProjects = async () => {
+  const fetchData = async () => {
     try {
-      const res = await api.get('/projects');
-      setProjects(res.data.data);
+      const [projRes, userRes] = await Promise.all([
+        api.get('/projects'),
+        api.get('/users').catch(() => ({ data: { data: [] } }))
+      ]);
+
+      setProjects(Array.isArray(projRes.data?.data) ? projRes.data.data : []);
+      setUsers(Array.isArray(userRes.data?.data) ? userRes.data.data : []);
     } catch (err) {
-      console.error(err);
-      Swal.fire('Error', 'Failed to load project board', 'error');
+      console.error('Error loading kanban board:', err);
+      setProjects([]);
+      Swal.fire('Notice', 'Failed to load project board. Please try refreshing.', 'error');
     } finally {
       setLoading(false);
     }
@@ -27,32 +34,39 @@ const ProjectKanban = () => {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    if (!form.title) return;
+    if (!form.title.trim()) {
+      Swal.fire('Warning', 'Please enter a task title.', 'warning');
+      return;
+    }
 
     try {
       const res = await api.post('/projects', form);
-      setProjects([res.data.data, ...projects]);
+      if (res.data?.data) {
+        setProjects(prev => [res.data.data, ...(Array.isArray(prev) ? prev : [])]);
+      }
       setIsModalOpen(false);
-      setForm({ title: '', description: '', category: 'Development', priority: 'Medium', stage: 'backlog' });
+      setForm({ title: '', description: '', category: 'Development', priority: 'Medium', stage: 'backlog', assignedTo: '' });
       Swal.fire('Created!', 'Project sprint card added to Backlog.', 'success');
     } catch (err) {
       console.error(err);
-      Swal.fire('Error', 'Failed to create project card', 'error');
+      Swal.fire('Error', err.response?.data?.error || 'Failed to create project card', 'error');
     }
   };
 
   const handleMoveStage = async (id, currentStage, direction) => {
-    const stages = ['backlog', 'in-progress', 'code-review', 'completed'];
-    const currentIdx = stages.indexOf(currentStage);
+    const stagesList = ['backlog', 'in-progress', 'code-review', 'completed'];
+    const currentIdx = stagesList.indexOf(currentStage);
     const targetIdx = direction === 'next' ? currentIdx + 1 : currentIdx - 1;
 
-    if (targetIdx < 0 || targetIdx >= stages.length) return;
+    if (targetIdx < 0 || targetIdx >= stagesList.length) return;
 
-    const newStage = stages[targetIdx];
+    const newStage = stagesList[targetIdx];
 
     try {
       const res = await api.put(`/projects/${id}`, { stage: newStage });
-      setProjects(projects.map(p => p._id === id ? res.data.data : p));
+      if (res.data?.data) {
+        setProjects(prev => prev.map(p => p._id === id ? res.data.data : p));
+      }
     } catch (err) {
       console.error(err);
       Swal.fire('Error', 'Failed to move sprint card', 'error');
@@ -72,9 +86,11 @@ const ProjectKanban = () => {
     if (result.isConfirmed) {
       try {
         await api.delete(`/projects/${id}`);
-        setProjects(projects.filter(p => p._id !== id));
+        setProjects(prev => prev.filter(p => p._id !== id));
+        Swal.fire('Deleted!', 'Sprint card deleted.', 'success');
       } catch (err) {
         console.error(err);
+        Swal.fire('Error', 'Failed to delete sprint card', 'error');
       }
     }
   };
@@ -85,6 +101,8 @@ const ProjectKanban = () => {
     { key: 'code-review', title: '🔍 Code Review', color: 'var(--amber)' },
     { key: 'completed', title: '✅ Completed', color: 'var(--emerald)' }
   ];
+
+  const safeProjects = Array.isArray(projects) ? projects : [];
 
   return (
     <div className="animate-fade-in">
@@ -146,6 +164,20 @@ const ProjectKanban = () => {
                 <option value="Critical">Critical ⚠️</option>
               </select>
             </div>
+
+            <div className="form-group">
+              <label className="form-label">Assign To Engineer</label>
+              <select 
+                className="form-input"
+                value={form.assignedTo}
+                onChange={(e) => setForm({ ...form, assignedTo: e.target.value })}
+              >
+                <option value="">-- Assign Developer --</option>
+                {users.map(u => (
+                  <option key={u._id} value={u._id}>{u.name} ({u.role})</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="form-group" style={{ marginTop: '0.5rem' }}>
@@ -167,66 +199,72 @@ const ProjectKanban = () => {
       )}
 
       {/* Kanban Board 4 Columns */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
-        {stages.map(stg => {
-          const colProjects = projects.filter(p => p.stage === stg.key);
-          return (
-            <div key={stg.key} className="glass-panel" style={{ padding: '1.25rem', minHeight: '60vh', background: 'rgba(10, 15, 35, 0.7)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: stg.color }}>{stg.title}</h3>
-                <span className="skill-category-badge">{colProjects.length}</span>
-              </div>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text-muted)' }}>
+          <p>Loading sprint board...</p>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+          {stages.map(stg => {
+            const colProjects = safeProjects.filter(p => p && p.stage === stg.key);
+            return (
+              <div key={stg.key} className="glass-panel" style={{ padding: '1.25rem', minHeight: '60vh', background: 'rgba(10, 15, 35, 0.7)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                  <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: stg.color }}>{stg.title}</h3>
+                  <span className="skill-category-badge">{colProjects.length}</span>
+                </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {colProjects.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--text-subtle)', fontSize: '0.85rem' }}>
-                    No tasks in {stg.key}
-                  </div>
-                ) : (
-                  colProjects.map(proj => (
-                    <div key={proj._id} style={{ background: 'rgba(20, 25, 55, 0.9)', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '1rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <span className="skill-category-badge" style={{ fontSize: '0.65rem' }}>{proj.category}</span>
-                        <span style={{ 
-                          fontSize: '0.65rem', fontWeight: 800, 
-                          color: proj.priority === 'Critical' ? 'var(--rose)' : proj.priority === 'High' ? 'var(--amber)' : 'var(--text-muted)'
-                        }}>
-                          {proj.priority.toUpperCase()}
-                        </span>
-                      </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {colProjects.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--text-subtle)', fontSize: '0.85rem' }}>
+                      No tasks in {stg.key}
+                    </div>
+                  ) : (
+                    colProjects.map(proj => (
+                      <div key={proj._id} style={{ background: 'rgba(20, 25, 55, 0.9)', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                          <span className="skill-category-badge" style={{ fontSize: '0.65rem' }}>{proj.category}</span>
+                          <span style={{ 
+                            fontSize: '0.65rem', fontWeight: 800, 
+                            color: proj.priority === 'Critical' ? 'var(--rose)' : proj.priority === 'High' ? 'var(--amber)' : 'var(--text-muted)'
+                          }}>
+                            {proj.priority?.toUpperCase() || 'MEDIUM'}
+                          </span>
+                        </div>
 
-                      <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.4rem' }}>{proj.title}</h4>
-                      {proj.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>{proj.description}</p>}
+                        <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.4rem' }}>{proj.title}</h4>
+                        {proj.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>{proj.description}</p>}
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-subtle)' }}>
-                          👤 {proj.assignedTo?.name || 'Unassigned'}
-                        </span>
-                        
-                        <div style={{ display: 'flex', gap: '0.25rem' }}>
-                          {stg.key !== 'backlog' && (
-                            <button onClick={() => handleMoveStage(proj._id, proj.stage, 'prev')} className="action-btn" title="Move Back">
-                              <ChevronLeft size={16} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-subtle)' }}>
+                            👤 {proj.assignedTo?.name || 'Unassigned'}
+                          </span>
+                          
+                          <div style={{ display: 'flex', gap: '0.25rem' }}>
+                            {stg.key !== 'backlog' && (
+                              <button onClick={() => handleMoveStage(proj._id, proj.stage, 'prev')} className="action-btn" title="Move Back">
+                                <ChevronLeft size={16} />
+                              </button>
+                            )}
+                            {stg.key !== 'completed' && (
+                              <button onClick={() => handleMoveStage(proj._id, proj.stage, 'next')} className="action-btn" title="Move Forward">
+                                <ChevronRight size={16} />
+                              </button>
+                            )}
+                            <button onClick={() => handleDeleteProject(proj._id)} className="action-btn delete" title="Delete Card">
+                              <Trash2 size={14} />
                             </button>
-                          )}
-                          {stg.key !== 'completed' && (
-                            <button onClick={() => handleMoveStage(proj._id, proj.stage, 'next')} className="action-btn" title="Move Forward">
-                              <ChevronRight size={16} />
-                            </button>
-                          )}
-                          <button onClick={() => handleDeleteProject(proj._id)} className="action-btn delete" title="Delete Card">
-                            <Trash2 size={14} />
-                          </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
     </div>
   );
