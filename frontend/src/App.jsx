@@ -13,6 +13,10 @@ import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
 import CompanyHub from './pages/CompanyHub';
 import LeaveManagement from './pages/LeaveManagement';
+import PayrollManagement from './pages/PayrollManagement';
+import ProjectKanban from './pages/ProjectKanban';
+import AssetManagement from './pages/AssetManagement';
+import PolicyHub from './pages/PolicyHub';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -88,6 +92,38 @@ function AppLayout() {
               element={
                 <ProtectedRoute>
                   <LeaveManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/projects" 
+              element={
+                <ProtectedRoute>
+                  <ProjectKanban />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/payroll" 
+              element={
+                <ProtectedRoute>
+                  <PayrollManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/assets" 
+              element={
+                <ProtectedRoute>
+                  <AssetManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/policy" 
+              element={
+                <ProtectedRoute>
+                  <PolicyHub />
                 </ProtectedRoute>
               } 
             />

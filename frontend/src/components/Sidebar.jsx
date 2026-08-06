@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Flame, MessageSquare, Trophy, User, Settings as SettingsIcon, LogOut, ShieldAlert, Calendar } from 'lucide-react';
+import { LayoutDashboard, Flame, MessageSquare, Trophy, User, Settings as SettingsIcon, LogOut, ShieldAlert, Calendar, Layers, DollarSign, Laptop, FileText } from 'lucide-react';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -52,9 +52,29 @@ const Sidebar = () => {
             <span>Leaderboard</span>
           </Link>
 
+          <Link to="/projects" className={`sidebar-link ${isActive('/projects') ? 'active' : ''}`}>
+            <Layers size={18} style={{ color: isActive('/projects') ? '#fff' : 'var(--cyan)' }} />
+            <span>Sprint Board</span>
+          </Link>
+
+          <Link to="/payroll" className={`sidebar-link ${isActive('/payroll') ? 'active' : ''}`}>
+            <DollarSign size={18} style={{ color: isActive('/payroll') ? '#fff' : 'var(--emerald)' }} />
+            <span>Payroll & Paystubs</span>
+          </Link>
+
           <Link to="/leave" className={`sidebar-link ${isActive('/leave') ? 'active' : ''}`}>
             <Calendar size={18} style={{ color: isActive('/leave') ? '#fff' : 'var(--emerald)' }} />
             <span>Leave System</span>
+          </Link>
+
+          <Link to="/assets" className={`sidebar-link ${isActive('/assets') ? 'active' : ''}`}>
+            <Laptop size={18} style={{ color: isActive('/assets') ? '#fff' : 'var(--violet)' }} />
+            <span>Hardware Assets</span>
+          </Link>
+
+          <Link to="/policy" className={`sidebar-link ${isActive('/policy') ? 'active' : ''}`}>
+            <FileText size={18} style={{ color: isActive('/policy') ? '#fff' : 'var(--amber)' }} />
+            <span>Policy & Holidays</span>
           </Link>
 
           <Link to="/profile" className={`sidebar-link ${isActive('/profile') ? 'active' : ''}`}>
