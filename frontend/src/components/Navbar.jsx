@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className="container">
         <Link to={token ? "/dashboard" : "/"} className="nav-brand" onClick={closeMenu}>
           <LayoutDashboard className="nav-brand-icon" size={28} />
-          OfficeHub ERP
+          DevSkills Tracker
         </Link>
         
         {/* Mobile Menu Toggle */}

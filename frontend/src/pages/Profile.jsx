@@ -39,22 +39,58 @@ const Profile = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           
           <div style={{ gridColumn: '1 / -1' }}>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--text-muted)' }}>My Badges</h3>
+            <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              🏆 Achievement Trophy Cabinet
+            </h3>
             {stats.badges && stats.badges.length > 0 ? (
-              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
+                gap: '1.5rem',
+                background: 'rgba(255,255,255,0.02)',
+                padding: '2rem',
+                borderRadius: '24px',
+                border: '1px solid var(--glass-border)'
+              }}>
                 {stats.badges.map(badge => (
-                  <div key={badge.id} className="glass-panel" style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', flex: '1', minWidth: '250px' }}>
-                    <div style={{ fontSize: '2.5rem' }}>{badge.icon}</div>
+                  <div key={badge.id} className="glass-panel" style={{ 
+                    padding: '2rem 1.5rem', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    alignItems: 'center', 
+                    gap: '1rem', 
+                    textAlign: 'center',
+                    background: 'linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(15,23,42,0.8) 100%)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{ 
+                      position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%', 
+                      background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)', 
+                      opacity: 0, transition: 'opacity 0.3s' 
+                    }} className="hover-glow"></div>
+                    <div style={{ 
+                      fontSize: '3.5rem', 
+                      filter: 'drop-shadow(0 0 15px rgba(255,215,0,0.5))',
+                      transform: 'scale(1)',
+                      transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    }} className="trophy-icon">{badge.icon}</div>
                     <div>
-                      <h4 style={{ color: 'var(--primary)', marginBottom: '0.2rem' }}>{badge.title}</h4>
-                      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{badge.description}</p>
+                      <h4 style={{ 
+                        color: 'var(--primary)', 
+                        marginBottom: '0.5rem',
+                        fontSize: '1.2rem',
+                        fontWeight: '700'
+                      }}>{badge.title}</h4>
+                      <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{badge.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                No badges earned yet. Complete tasks to earn badges!
+              <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '3rem', opacity: 0.5, marginBottom: '1rem' }}>🔒</div>
+                No badges earned yet. Complete tasks to unlock trophies!
               </div>
             )}
           </div>
@@ -90,7 +126,7 @@ const Profile = () => {
                     data={[
                       { name: 'Completed', value: stats.completed, fill: '#10b981' },
                       { name: 'In Progress', value: stats.inProgress, fill: '#f59e0b' },
-                      { name: 'Pending', value: stats.pending, fill: '#6366f1' }
+                      { name: 'Pending', value: stats.pending, fill: '#0ea5e9' }
                     ].filter(item => item.value > 0)}
                     cx="50%"
                     cy="50%"
@@ -103,7 +139,7 @@ const Profile = () => {
                     { [
                       { name: 'Completed', value: stats.completed, fill: '#10b981' },
                       { name: 'In Progress', value: stats.inProgress, fill: '#f59e0b' },
-                      { name: 'Pending', value: stats.pending, fill: '#6366f1' }
+                      { name: 'Pending', value: stats.pending, fill: '#0ea5e9' }
                     ].filter(item => item.value > 0).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}

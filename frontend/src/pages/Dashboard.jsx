@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, BarChart2 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import api from '../api';
 import SkillCard from '../components/SkillCard';
 import SkillDetailsModal from '../components/SkillDetailsModal';
@@ -110,6 +111,20 @@ const Dashboard = () => {
     return true;
   });
 
+  // Analytics computations
+  const statusStats = [
+    { name: 'Pending', count: skills.filter(s => s.status === 'pending').length },
+    { name: 'In Progress', count: skills.filter(s => s.status === 'in-progress').length },
+    { name: 'Completed', count: skills.filter(s => s.status === 'completed').length }
+  ];
+
+  const categoryMap = {};
+  skills.forEach(s => {
+    categoryMap[s.category] = (categoryMap[s.category] || 0) + 1;
+  });
+  const categoryStats = Object.keys(categoryMap).map(key => ({ name: key, value: categoryMap[key] }));
+  const COLORS = ['#0ea5e9', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e'];
+
   return (
     <div className="animate-fade-in">
       <div className="dashboard-header">
@@ -121,6 +136,58 @@ const Dashboard = () => {
           <Plus size={18} style={{ marginRight: '0.5rem' }} /> Add Task
         </button>
       </div>
+
+      {/* Analytics Section */}
+      {skills.length > 0 && (
+        <div style={{ marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <BarChart2 className="text-primary" /> Progress Analytics
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div className="glass-panel" style={{ padding: '1.5rem', height: '300px' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-muted)' }}>Status Overview</h3>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={statusStats} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <XAxis dataKey="name" stroke="var(--text-muted)" />
+                  <YAxis stroke="var(--text-muted)" allowDecimals={false} />
+                  <RechartsTooltip cursor={{fill: 'rgba(255,255,255,0.05)'}} contentStyle={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '8px' }} />
+                  <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            
+            <div className="glass-panel" style={{ padding: '1.5rem', height: '300px' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--text-muted)' }}>Skill Distribution</h3>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={categoryStats}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {categoryStats.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip contentStyle={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '8px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '-20px' }}>
+                {categoryStats.map((entry, index) => (
+                  <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.85rem' }}>
+                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: COLORS[index % COLORS.length] }}></div>
+                    {entry.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         <input 
