@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -14,12 +15,28 @@ import CompanyHub from './pages/CompanyHub';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
-  return (
-    <Router>
+function AppLayout() {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    return (
       <div className="app-container">
-        <Navbar />
-        <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-shell">
+      <Sidebar />
+      <div className="workspace-wrapper">
+        <Header />
+        <main className="workspace-content">
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
@@ -82,11 +99,18 @@ function App() {
               } 
             />
             
-            {/* Catch-all route for 404 Not Found */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
       </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppLayout />
     </Router>
   );
 }

@@ -130,187 +130,196 @@ const Dashboard = () => {
   return (
     <div className="animate-fade-in">
       
-      {/* Header Bar */}
+      {/* Workspace Dashboard Header */}
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">
-            Learning Workspace <span className="text-gradient">.pro</span>
+            Developer Workspace <span className="text-gradient">.bento</span>
           </h1>
-          <p className="dashboard-subtitle">Track your progress and roadmap across your tech stack.</p>
+          <p className="dashboard-subtitle">Bento grid view of your tech curriculum, velocity, and task roadmaps.</p>
         </div>
         <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-          <Plus size={18} /> Add New Skill
+          <Plus size={18} /> Add Skill Task
         </button>
       </div>
 
-      {/* KPI Stats Summary Row */}
-      {skills.length > 0 && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon-wrapper" style={{ background: 'rgba(99, 102, 241, 0.12)', color: 'var(--primary)', borderColor: 'rgba(99, 102, 241, 0.3)' }}>
-              <Layers size={22} />
-            </div>
-            <div>
-              <div className="stat-value">{totalCount}</div>
-              <div className="stat-label">Total Tracked</div>
-            </div>
+      {/* Bento Grid Container */}
+      <div className="bento-grid">
+        
+        {/* KPI Row Cards (Bento 3 columns each) */}
+        <div className="bento-card bento-col-3" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.35rem 1.5rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(99, 102, 241, 0.15)', color: 'var(--primary)', border: '1px solid rgba(99, 102, 241, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Layers size={22} />
           </div>
-
-          <div className="stat-card">
-            <div className="stat-icon-wrapper" style={{ background: 'rgba(16, 185, 129, 0.12)', color: 'var(--emerald)', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
-              <CheckCircle2 size={22} />
-            </div>
-            <div>
-              <div className="stat-value" style={{ color: 'var(--emerald)' }}>{completedCount}</div>
-              <div className="stat-label">Completed Skills</div>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon-wrapper" style={{ background: 'rgba(245, 158, 11, 0.12)', color: 'var(--amber)', borderColor: 'rgba(245, 158, 11, 0.3)' }}>
-              <Clock size={22} />
-            </div>
-            <div>
-              <div className="stat-value" style={{ color: 'var(--amber)' }}>{inProgressCount}</div>
-              <div className="stat-label">In Progress</div>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon-wrapper" style={{ background: 'rgba(168, 85, 247, 0.12)', color: 'var(--purple)', borderColor: 'rgba(168, 85, 247, 0.3)' }}>
-              <Target size={22} />
-            </div>
-            <div>
-              <div className="stat-value" style={{ color: 'var(--purple)' }}>{completionRate}%</div>
-              <div className="stat-label">Completion Velocity</div>
-            </div>
+          <div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>{totalCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Skills Tracked</div>
           </div>
         </div>
-      )}
 
-      {/* Analytics Charts Section */}
-      {skills.length > 0 && (
-        <div style={{ marginBottom: '3rem' }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <BarChart2 size={20} color="var(--primary)" /> Learning Analytics
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
-            
-            <div className="glass-panel" style={{ padding: '1.5rem', height: '280px' }}>
-              <h3 style={{ fontSize: '0.95rem', marginBottom: '1rem', color: 'var(--text-muted)', fontWeight: 600 }}>Status Distribution</h3>
-              <ResponsiveContainer width="100%" height="80%">
-                <BarChart data={statusStats} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} />
-                  <YAxis stroke="var(--text-muted)" allowDecimals={false} fontSize={12} tickLine={false} />
-                  <RechartsTooltip cursor={{fill: 'rgba(255,255,255,0.03)'}} contentStyle={{ backgroundColor: '#0f172a', border: '1px solid var(--border-light)', borderRadius: '10px' }} />
-                  <Bar dataKey="count" fill="var(--primary)" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+        <div className="bento-card bento-col-3" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.35rem 1.5rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--emerald)', border: '1px solid rgba(16, 185, 129, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <CheckCircle2 size={22} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--emerald)', fontFamily: 'Outfit, sans-serif' }}>{completedCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Completed Skills</div>
+          </div>
+        </div>
+
+        <div className="bento-card bento-col-3" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.35rem 1.5rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)', color: 'var(--amber)', border: '1px solid rgba(245, 158, 11, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Clock size={22} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--amber)', fontFamily: 'Outfit, sans-serif' }}>{inProgressCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>In Progress</div>
+          </div>
+        </div>
+
+        <div className="bento-card bento-col-3" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.35rem 1.5rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(168, 85, 247, 0.15)', color: 'var(--violet)', border: '1px solid rgba(168, 85, 247, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Target size={22} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--violet)', fontFamily: 'Outfit, sans-serif' }}>{completionRate}%</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Completion Rate</div>
+          </div>
+        </div>
+
+        {/* Main Left Bento Section (Skills List Grid - Col 8) */}
+        <div className="bento-card bento-col-8">
+          
+          {/* Search and Filters */}
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
+              <input 
+                type="text" 
+                placeholder="Search skills or stacks..." 
+                className="form-input" 
+                style={{ paddingLeft: '2.5rem', padding: '0.65rem 1rem 0.65rem 2.5rem' }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             </div>
-            
-            <div className="glass-panel" style={{ padding: '1.5rem', height: '280px' }}>
-              <h3 style={{ fontSize: '0.95rem', marginBottom: '1rem', color: 'var(--text-muted)', fontWeight: 600 }}>Category Breakdown</h3>
-              <ResponsiveContainer width="100%" height="75%">
-                <PieChart>
-                  <Pie
-                    data={categoryStats}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {categoryStats.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <RechartsTooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid var(--border-light)', borderRadius: '10px' }} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '-10px' }}>
-                {categoryStats.map((entry, index) => (
-                  <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: COLORS[index % COLORS.length] }}></div>
-                    {entry.name}
-                  </div>
-                ))}
+
+            <div style={{ display: 'flex', gap: '0.3rem', background: 'var(--bg-main)', padding: '0.25rem', borderRadius: '10px', border: '1px solid var(--border-light)' }}>
+              {['All', 'Not Started', 'In Progress', 'Completed'].map(f => (
+                <button 
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  style={{
+                    background: filter === f ? 'var(--primary)' : 'transparent',
+                    color: filter === f ? '#fff' : 'var(--text-muted)',
+                    border: 'none',
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Skills Grid */}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-muted)' }}>
+              <Sparkles className="status-dot pulse" size={24} style={{ color: 'var(--primary)', marginBottom: '1rem' }} />
+              <p>Syncing workspace roadmap...</p>
+            </div>
+          ) : skills.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon">
+                <Layers size={28} />
               </div>
+              <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-main)', fontSize: '1.1rem' }}>No skills tracked yet</h3>
+              <p style={{ maxWidth: '380px', fontSize: '0.875rem' }}>Click "+ Add Skill Task" to pick a tech stack and generate your checklist.</p>
             </div>
+          ) : filteredSkills.length === 0 ? (
+            <div className="empty-state">
+              <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-main)' }}>No matching skills</h3>
+              <p style={{ fontSize: '0.875rem' }}>Try adjusting your search filter.</p>
+            </div>
+          ) : (
+            <div className="skills-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+              {filteredSkills.map(skill => (
+                <SkillCard 
+                  key={skill._id} 
+                  skill={skill} 
+                  onUpdate={handleUpdateSkill} 
+                  onDelete={handleDeleteSkill}
+                  onOpenDetails={setSelectedSkill}
+                />
+              ))}
+            </div>
+          )}
 
+        </div>
+
+        {/* Right Bento Analytics Column (Col 4) */}
+        <div className="bento-col-4" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          
+          {/* Status Breakdown Chart */}
+          <div className="bento-card" style={{ height: '260px' }}>
+            <h3 style={{ fontSize: '0.95rem', marginBottom: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <BarChart2 size={16} color="var(--primary)" /> Status Velocity
+            </h3>
+            <ResponsiveContainer width="100%" height="80%">
+              <BarChart data={statusStats} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} tickLine={false} />
+                <YAxis stroke="var(--text-muted)" allowDecimals={false} fontSize={11} tickLine={false} />
+                <RechartsTooltip cursor={{fill: 'rgba(255,255,255,0.03)'}} contentStyle={{ backgroundColor: '#090c1e', border: '1px solid var(--border-light)', borderRadius: '10px' }} />
+                <Bar dataKey="count" fill="var(--violet)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </div>
-      )}
 
-      {/* Filter and Search Bar */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ position: 'relative', minWidth: '280px' }}>
-          <input 
-            type="text" 
-            placeholder="Search topics or categories..." 
-            className="form-input" 
-            style={{ paddingLeft: '2.5rem' }}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <Search size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          {/* Skill Distribution Pie */}
+          <div className="bento-card" style={{ height: '260px' }}>
+            <h3 style={{ fontSize: '0.95rem', marginBottom: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Stack Breakdown</h3>
+            {categoryStats.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height="70%">
+                  <PieChart>
+                    <Pie
+                      data={categoryStats}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={45}
+                      outerRadius={65}
+                      paddingAngle={4}
+                      dataKey="value"
+                    >
+                      {categoryStats.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip contentStyle={{ backgroundColor: '#090c1e', border: '1px solid var(--border-light)', borderRadius: '10px' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.85rem', flexWrap: 'wrap', marginTop: '-5px' }}>
+                  {categoryStats.map((entry, index) => (
+                    <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.775rem', color: 'var(--text-muted)' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: COLORS[index % COLORS.length] }}></div>
+                      {entry.name}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-subtle)', textAlign: 'center', marginTop: '3rem' }}>No data to display yet.</p>
+            )}
+          </div>
+
         </div>
 
-        <div style={{ display: 'flex', gap: '0.4rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '10px', border: '1px solid var(--border-light)' }}>
-          {['All', 'Not Started', 'In Progress', 'Completed'].map(f => (
-            <button 
-              key={f}
-              onClick={() => setFilter(f)}
-              style={{
-                background: filter === f ? 'var(--primary)' : 'transparent',
-                color: filter === f ? '#fff' : 'var(--text-muted)',
-                border: 'none',
-                padding: '0.4rem 0.9rem',
-                borderRadius: '8px',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
       </div>
-
-      {/* Main Grid Content */}
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
-          <Sparkles className="status-dot pulse" size={24} style={{ color: 'var(--primary)', marginBottom: '1rem' }} />
-          <p>Loading learning skills...</p>
-        </div>
-      ) : skills.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">
-            <Layers size={28} />
-          </div>
-          <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-main)', fontSize: '1.2rem' }}>No skills in your roadmap yet</h3>
-          <p style={{ maxWidth: '400px', fontSize: '0.9rem' }}>Click "Add New Skill" above to pick a technology and generate your structured checklist.</p>
-        </div>
-      ) : filteredSkills.length === 0 ? (
-        <div className="empty-state">
-          <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-main)' }}>No matching tasks found</h3>
-          <p style={{ fontSize: '0.9rem' }}>Try clearing your search term or selecting a different filter option.</p>
-        </div>
-      ) : (
-        <div className="skills-grid">
-          {filteredSkills.map(skill => (
-            <SkillCard 
-              key={skill._id} 
-              skill={skill} 
-              onUpdate={handleUpdateSkill} 
-              onDelete={handleDeleteSkill}
-              onOpenDetails={setSelectedSkill}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Add Task Modal */}
       {isModalOpen && (
