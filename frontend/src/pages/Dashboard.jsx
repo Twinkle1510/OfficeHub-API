@@ -269,7 +269,7 @@ const Dashboard = () => {
               <p style={{ fontSize: '0.875rem' }}>Try adjusting your search filter.</p>
             </div>
           ) : (
-            <div className="skills-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+            <div className="skills-grid" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {filteredSkills.map(skill => (
                 <SkillCard 
                   key={skill._id} 
