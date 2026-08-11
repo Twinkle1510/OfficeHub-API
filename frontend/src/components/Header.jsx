@@ -145,20 +145,7 @@ const Header = ({ setIsSidebarOpen }) => {
           <Database size={13} /> ⚡ Load 10 Demo Entries
         </button>
 
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.4rem',
-          fontSize: '0.775rem',
-          fontWeight: '700',
-          padding: '0.35rem 0.75rem',
-          borderRadius: '20px',
-          background: 'rgba(168, 85, 247, 0.12)',
-          color: 'var(--violet)',
-          border: '1px solid rgba(168, 85, 247, 0.3)'
-        }}>
-          <Sparkles size={13} /> {user?.role ? user.role.toUpperCase() : 'MEMBER'} WORKSPACE
-        </div>
+
 
         {/* Message Icon */}
         <button 

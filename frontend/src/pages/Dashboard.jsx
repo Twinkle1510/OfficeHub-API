@@ -193,9 +193,9 @@ const Dashboard = () => {
       <div className="dashboard-header" style={{ marginBottom: '1.5rem' }}>
         <div>
           <h1 className="dashboard-title">
-            Developer Workspace <span className="text-gradient">.bento</span>
+            Company Dashboard <span className="text-gradient">📊</span>
           </h1>
-          <p className="dashboard-subtitle">Bento grid view of your tech curriculum, velocity, and task roadmaps.</p>
+          <p className="dashboard-subtitle">Overview of your tasks, velocity, and company updates.</p>
         </div>
         <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
           <Plus size={18} /> Add Skill Task
