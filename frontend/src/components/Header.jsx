@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sparkles, Bell, Database, Menu, Check } from 'lucide-react';
+import { Search, Sparkles, Bell, Database, Menu, Check, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import Swal from 'sweetalert2';
@@ -13,11 +13,13 @@ const Header = ({ setIsSidebarOpen }) => {
 
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadMsgCount, setUnreadMsgCount] = useState(0);
   const notifRef = useRef(null);
 
   useEffect(() => {
     if (token) {
       fetchNotifications();
+      fetchUnreadMessageCount();
     }
   }, [token]);
 
@@ -37,6 +39,15 @@ const Header = ({ setIsSidebarOpen }) => {
       setNotifications(res.data.data);
     } catch (err) {
       console.error('Failed to fetch notifications', err);
+    }
+  };
+
+  const fetchUnreadMessageCount = async () => {
+    try {
+      const res = await api.get('/messages/unread-count');
+      setUnreadMsgCount(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch unread message count', err);
     }
   };
 
@@ -148,6 +159,45 @@ const Header = ({ setIsSidebarOpen }) => {
         }}>
           <Sparkles size={13} /> {user?.role ? user.role.toUpperCase() : 'MEMBER'} WORKSPACE
         </div>
+
+        {/* Message Icon */}
+        <button 
+          onClick={() => navigate('/community')}
+          title="Direct Messages"
+          style={{
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid var(--border-light)',
+            color: 'var(--text-muted)',
+            padding: '0.5rem',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative'
+          }}
+        >
+          <MessageSquare size={16} />
+          {unreadMsgCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: '-5px',
+              right: '-5px',
+              background: 'var(--primary)',
+              color: '#fff',
+              fontSize: '0.65rem',
+              fontWeight: 'bold',
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {unreadMsgCount}
+            </span>
+          )}
+        </button>
 
         <div style={{ position: 'relative' }} ref={notifRef}>
           <button 

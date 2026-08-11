@@ -63,7 +63,35 @@ exports.getDirectMessages = async (req, res) => {
       .populate('receiver', 'name role')
       .sort({ createdAt: 1 });
       
+    // Mark these messages as read since we just opened the chat
+    await Message.updateMany(
+      {
+        sender: req.params.userId,
+        receiver: req.user.id,
+        read: false
+      },
+      {
+        $set: { read: true }
+      }
+    );
+      
     res.status(200).json({ success: true, data: messages });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// @desc    Get unread direct messages count
+// @route   GET /api/messages/unread-count
+// @access  Private
+exports.getUnreadMessageCount = async (req, res) => {
+  try {
+    const count = await Message.countDocuments({
+      receiver: req.user.id,
+      read: false,
+      $or: [{ task: { $exists: false } }, { task: null }]
+    });
+    res.status(200).json({ success: true, data: count });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
