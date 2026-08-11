@@ -285,7 +285,7 @@ const Dashboard = () => {
         </div>
 
         {/* Right Bento Analytics Column (Col 4) */}
-        <div className="bento-col-4" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="bento-col-4" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'sticky', top: '2rem', height: 'max-content' }}>
           
           {/* Status Breakdown Chart */}
           <div className="bento-card" style={{ height: '260px' }}>
