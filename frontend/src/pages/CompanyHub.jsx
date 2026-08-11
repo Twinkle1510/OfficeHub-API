@@ -159,10 +159,10 @@ const CompanyHub = () => {
       )}
 
       {/* Messaging Grid */}
-      <div style={{ display: 'flex', gap: '1.5rem', height: '62vh', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '1.5rem', height: 'calc(100vh - 220px)', minHeight: '500px' }}>
         
         {/* User List Sidebar */}
-        <div className="glass-panel" style={{ width: '30%', minWidth: '260px', overflowY: 'auto', padding: '1.25rem' }}>
+        <div className="glass-panel" style={{ width: '30%', minWidth: '260px', height: '100%', overflowY: 'auto', padding: '1.25rem' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', fontSize: '1rem' }}>
             <Users size={18} color="var(--primary)" /> Team Directory
           </h3>
@@ -209,7 +209,7 @@ const CompanyHub = () => {
         </div>
 
         {/* Chat Viewport */}
-        <div className="glass-panel" style={{ flex: 1, minWidth: '320px', display: 'flex', flexDirection: 'column', padding: '0' }}>
+        <div className="glass-panel" style={{ flex: 1, minWidth: '320px', height: '100%', display: 'flex', flexDirection: 'column', padding: '0' }}>
           {selectedUser ? (
             <>
               {/* Header */}
