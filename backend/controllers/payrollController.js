@@ -1,5 +1,6 @@
 const Payroll = require('../models/Payroll');
 const Attendance = require('../models/Attendance');
+const Notification = require('../models/Notification');
 
 // @desc    Generate Payroll for user (HR / Admin)
 // @route   POST /api/payroll/generate
@@ -34,6 +35,13 @@ exports.generatePayroll = async (req, res) => {
       netSalary,
       status: 'processed',
       paymentDate: new Date()
+    });
+
+    await Notification.create({
+      user: userId,
+      title: 'New Paystub Generated',
+      message: `Your paystub for ${month} has been processed. Net Salary: $${netSalary}.`,
+      type: 'payroll'
     });
 
     res.status(201).json({ success: true, data: payroll });

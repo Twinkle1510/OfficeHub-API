@@ -1,4 +1,5 @@
 const Leave = require('../models/Leave');
+const Notification = require('../models/Notification');
 
 // @desc    Apply for Leave
 // @route   POST /api/leave/apply
@@ -70,6 +71,13 @@ exports.updateLeaveStatus = async (req, res) => {
     if (hrNote) leave.hrNote = hrNote;
 
     await leave.save();
+
+    await Notification.create({
+      user: leave.user,
+      title: `Leave Request ${status === 'approved' ? 'Approved' : 'Rejected'}`,
+      message: `Your leave request from ${new Date(leave.startDate).toLocaleDateString()} to ${new Date(leave.endDate).toLocaleDateString()} has been ${status}. ${hrNote ? 'HR Note: ' + hrNote : ''}`,
+      type: 'leave'
+    });
 
     res.status(200).json({ success: true, data: leave });
   } catch (error) {

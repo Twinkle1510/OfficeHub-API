@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, CheckCircle2, XCircle, Clock, Plus, ShieldCheck } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, Clock, Plus, ShieldCheck, Download } from 'lucide-react';
 import api from '../api';
 import Swal from 'sweetalert2';
 
@@ -72,6 +72,26 @@ const LeaveManagement = () => {
       console.error(err);
       Swal.fire('Error', 'Failed to update leave status', 'error');
     }
+  };
+
+  const exportToCSV = () => {
+    if (allRequests.length === 0) return;
+    const headers = ['Employee,Type,Start Date,End Date,Reason,Status,HR Note\n'];
+    const csv = allRequests.map(r => {
+      const emp = r.user?.name || 'Unknown';
+      const sd = new Date(r.startDate).toLocaleDateString();
+      const ed = new Date(r.endDate).toLocaleDateString();
+      const note = r.hrNote ? r.hrNote.replace(/,/g, '') : '';
+      return `${emp},${r.type},${sd},${ed},${r.reason.replace(/,/g, '')},${r.status},${note}`;
+    });
+    
+    const blob = new Blob([headers + csv.join('\n')], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `leave_requests_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -159,9 +179,14 @@ const LeaveManagement = () => {
       {/* HR Approval Queue Section (for HR & Admins) */}
       {isHRorAdmin && (
         <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2.5rem' }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={22} color="var(--violet)" /> HR Leave Approval Queue ({allRequests.filter(r => r.status === 'pending').length} Pending)
-          </h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <ShieldCheck size={22} color="var(--violet)" /> HR Leave Approval Queue ({allRequests.filter(r => r.status === 'pending').length} Pending)
+            </h2>
+            <button onClick={exportToCSV} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
+              <Download size={16} /> Export CSV
+            </button>
+          </div>
 
           {loading ? (
             <p style={{ color: 'var(--text-muted)' }}>Loading requests...</p>

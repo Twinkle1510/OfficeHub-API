@@ -64,6 +64,23 @@ const PayrollManagement = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (allPayrolls.length === 0) return;
+    const headers = ['Employee,Month,Base Salary,Overtime Pay,Bonuses,Deductions,Net Salary\n'];
+    const csv = allPayrolls.map(p => {
+      const emp = p.user?.name || 'Unknown';
+      return `${emp},${p.month},${p.baseSalary},${p.overtimePay},${p.bonuses},${p.deductions},${p.netSalary}`;
+    });
+    
+    const blob = new Blob([headers + csv.join('\n')], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `payroll_master_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="animate-fade-in">
       <div className="dashboard-header" style={{ marginBottom: '2rem' }}>
@@ -161,9 +178,14 @@ const PayrollManagement = () => {
       {/* HR All Payroll Records Queue */}
       {isHRorAdmin && (
         <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2.5rem' }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={22} color="var(--violet)" /> Company Payroll Master Log ({allPayrolls.length})
-          </h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <h2 style={{ fontSize: '1.25rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <ShieldCheck size={22} color="var(--violet)" /> Company Payroll Master Log ({allPayrolls.length})
+            </h2>
+            <button onClick={exportToCSV} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
+              <Download size={16} /> Export CSV
+            </button>
+          </div>
 
           {loading ? (
             <p style={{ color: 'var(--text-muted)' }}>Loading payrolls...</p>

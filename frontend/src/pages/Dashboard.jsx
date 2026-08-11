@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 const Dashboard = () => {
   const [skills, setSkills] = useState(() => JSON.parse(sessionStorage.getItem('user_skills') || '[]'));
   const [loading, setLoading] = useState(() => !sessionStorage.getItem('user_skills'));
+  const [analytics, setAnalytics] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTask, setNewTask] = useState({ category: '', task: '', subTasks: [] });
   const [selectedSkill, setSelectedSkill] = useState(null);
@@ -25,7 +26,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchSkills();
+    fetchAnalytics();
   }, []);
+
+  const fetchAnalytics = async () => {
+    try {
+      const res = await api.get('/analytics/dashboard');
+      setAnalytics(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch analytics', err);
+    }
+  };
 
   const fetchSkills = async () => {
     try {
@@ -205,8 +216,8 @@ const Dashboard = () => {
             <Layers size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '1.65rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>{totalCount}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Skills Tracked</div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>{isHRorAdmin ? analytics?.totalEmployees || 0 : totalCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{isHRorAdmin ? 'Total Employees' : 'Total Skills Tracked'}</div>
           </div>
         </div>
 
@@ -215,8 +226,8 @@ const Dashboard = () => {
             <CheckCircle2 size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--emerald)', fontFamily: 'Outfit, sans-serif' }}>{completedCount}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Completed Skills</div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--emerald)', fontFamily: 'Outfit, sans-serif' }}>{isHRorAdmin ? analytics?.activeProjects || 0 : analytics?.myActiveTasks || 0}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{isHRorAdmin ? 'Active Sprints' : 'My Active Sprints'}</div>
           </div>
         </div>
 
@@ -225,8 +236,8 @@ const Dashboard = () => {
             <Clock size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--amber)', fontFamily: 'Outfit, sans-serif' }}>{inProgressCount}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>In Progress</div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--amber)', fontFamily: 'Outfit, sans-serif' }}>{isHRorAdmin ? analytics?.pendingLeaves || 0 : analytics?.myPendingLeaves || 0}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{isHRorAdmin ? 'Pending Leaves' : 'My Pending Leaves'}</div>
           </div>
         </div>
 
@@ -235,8 +246,8 @@ const Dashboard = () => {
             <Target size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--violet)', fontFamily: 'Outfit, sans-serif' }}>{completionRate}%</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Completion Rate</div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--violet)', fontFamily: 'Outfit, sans-serif' }}>${isHRorAdmin ? analytics?.totalPayrollExpense?.toLocaleString() || 0 : analytics?.lastNetSalary?.toLocaleString() || 0}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{isHRorAdmin ? 'Monthly Payroll' : 'Last Net Pay'}</div>
           </div>
         </div>
 

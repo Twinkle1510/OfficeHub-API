@@ -15,6 +15,9 @@ const leaveRoutes = require('./routes/leaveRoutes');
 const payrollRoutes = require('./routes/payrollRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const assetRoutes = require('./routes/assetRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const policyRoutes = require('./routes/policyRoutes');
 
 const app = express();
 
@@ -33,6 +36,9 @@ app.use('/api/leave', leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/assets', assetRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/policies', policyRoutes);
 
 // Root endpoint for testing
 app.get('/', (req, res) => {
