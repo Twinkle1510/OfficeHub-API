@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Flame, MessageSquare, Trophy, User, Settings as SettingsIcon, LogOut, ShieldAlert, Calendar, Layers, DollarSign, Laptop, FileText } from 'lucide-react';
+import { LayoutDashboard, Flame, MessageSquare, Trophy, User, Settings as SettingsIcon, LogOut, ShieldAlert, Calendar, Layers, DollarSign, Laptop, FileText, X } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('token');
@@ -20,18 +20,41 @@ const Sidebar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="sidebar-nav">
-      <div>
+    <>
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? 'show' : ''}`} 
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+      <aside className={`sidebar-nav ${isSidebarOpen ? 'mobile-open' : ''}`}>
         {/* Brand */}
-        <Link to="/dashboard" className="sidebar-brand">
-          <div className="sidebar-brand-icon">
-            <LayoutDashboard size={20} />
-          </div>
-          <span className="brand-text">DevSkills<span className="text-gradient">.pro</span></span>
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingRight: '0.5rem' }}>
+          <Link to="/dashboard" className="sidebar-brand" style={{ marginBottom: 0 }}>
+            <div className="sidebar-brand-icon">
+              <LayoutDashboard size={20} />
+            </div>
+            <span className="brand-text">DevSkills<span className="text-gradient">.pro</span></span>
+          </Link>
+          <button 
+            className="mobile-close-btn"
+            onClick={() => setIsSidebarOpen(false)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid var(--border-light)',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              padding: '0.4rem',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <X size={20} />
+          </button>
+        </div>
 
         {/* Menu Navigation */}
-        <div className="sidebar-menu">
+        <div className="sidebar-menu" onClick={() => { if(window.innerWidth <= 768) setIsSidebarOpen(false); }}>
           <Link to="/dashboard" className={`sidebar-link ${isActive('/dashboard') ? 'active' : ''}`}>
             <LayoutDashboard size={18} />
             <span>Dashboard</span>
@@ -103,9 +126,6 @@ const Sidebar = () => {
             </Link>
           )}
         </div>
-      </div>
-
-      {/* User Info & Logout Footer */}
       <div className="sidebar-user-footer">
         <div className="user-avatar">
           {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
@@ -136,6 +156,7 @@ const Sidebar = () => {
         </button>
       </div>
     </aside>
+    </>
   );
 };
 

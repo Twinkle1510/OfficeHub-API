@@ -204,7 +204,7 @@ const ProjectKanban = () => {
           <p>Loading sprint board...</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {stages.map(stg => {
             const colProjects = safeProjects.filter(p => p && p.stage === stg.key);
             return (

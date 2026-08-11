@@ -4,6 +4,9 @@ const Asset = require('./models/Asset');
 const Attendance = require('./models/Attendance');
 const Leave = require('./models/Leave');
 const User = require('./models/User');
+const Activity = require('./models/Activity');
+const Message = require('./models/Message');
+const Payroll = require('./models/Payroll');
 
 exports.seedSampleData = async () => {
   try {
@@ -39,6 +42,31 @@ exports.seedSampleData = async () => {
         password: 'employee123',
         role: 'employee'
       });
+    }
+
+    // 0.5. Seed 10 Sample Users
+    const totalUsers = await User.countDocuments();
+    if (totalUsers < 13) {
+      console.log('Seeding 10 Sample Users...');
+      const sampleUsers = [
+        { name: 'John Doe', email: 'john@devskills.com', password: 'password123', role: 'developer' },
+        { name: 'Jane Smith', email: 'jane@devskills.com', password: 'password123', role: 'designer' },
+        { name: 'Michael Brown', email: 'michael@devskills.com', password: 'password123', role: 'tester' },
+        { name: 'Emily Davis', email: 'emily@devskills.com', password: 'password123', role: 'employee' },
+        { name: 'Daniel Wilson', email: 'daniel@devskills.com', password: 'password123', role: 'developer' },
+        { name: 'Olivia Garcia', email: 'olivia@devskills.com', password: 'password123', role: 'hr' },
+        { name: 'William Martinez', email: 'william@devskills.com', password: 'password123', role: 'employee' },
+        { name: 'Sophia Anderson', email: 'sophia@devskills.com', password: 'password123', role: 'designer' },
+        { name: 'James Thomas', email: 'james@devskills.com', password: 'password123', role: 'tester' },
+        { name: 'Isabella Taylor', email: 'isabella@devskills.com', password: 'password123', role: 'user' }
+      ];
+      
+      for (const uData of sampleUsers) {
+        const exists = await User.findOne({ email: uData.email });
+        if (!exists) {
+          await User.create(uData);
+        }
+      }
     }
 
     const userId = adminUser._id;
@@ -127,14 +155,94 @@ exports.seedSampleData = async () => {
       ]);
     }
 
-    // 4. Seed Attendance & Leave if empty
+    // 4. Seed Leave if empty
     const leaveCount = await Leave.countDocuments();
     if (leaveCount === 0) {
-      console.log('Seeding Leave Applications & Attendance...');
-      await Leave.insertMany([
-        { user: userId, type: 'Paid', startDate: new Date('2026-08-15'), endDate: new Date('2026-08-18'), reason: 'Annual Family Vacation', status: 'approved', hrNote: 'Approved. Enjoy your vacation!' },
-        { user: userId, type: 'Casual', startDate: new Date('2026-09-01'), endDate: new Date('2026-09-02'), reason: 'Personal errands', status: 'pending' }
-      ]);
+      console.log('Seeding 10 Leave Applications...');
+      const leaveRecords = [];
+      for(let i = 1; i <= 10; i++) {
+        leaveRecords.push({
+          user: userId,
+          type: i % 2 === 0 ? 'Paid' : 'Casual',
+          startDate: new Date(`2026-0${(i%9)+1}-10`),
+          endDate: new Date(`2026-0${(i%9)+1}-12`),
+          reason: `Sample Leave Reason ${i}`,
+          status: i % 3 === 0 ? 'approved' : 'pending'
+        });
+      }
+      await Leave.insertMany(leaveRecords);
+    }
+
+    // 5. Seed Attendance if empty
+    const attendanceCount = await Attendance.countDocuments();
+    if (attendanceCount === 0) {
+      console.log('Seeding 10 Attendance records...');
+      const attendanceRecords = [];
+      for(let i = 1; i <= 10; i++) {
+        attendanceRecords.push({
+          user: userId,
+          date: `2026-08-${i.toString().padStart(2, '0')}`,
+          punchIn: new Date(`2026-08-${i.toString().padStart(2, '0')}T09:00:00Z`),
+          punchOut: new Date(`2026-08-${i.toString().padStart(2, '0')}T17:30:00Z`),
+          workHours: 8.5,
+          overtimeHours: 0.5,
+          status: 'completed'
+        });
+      }
+      await Attendance.insertMany(attendanceRecords);
+    }
+
+    // 6. Seed Activity if empty
+    const activityCount = await Activity.countDocuments();
+    if (activityCount === 0) {
+      console.log('Seeding 10 Activity records...');
+      const activityRecords = [];
+      for(let i = 1; i <= 10; i++) {
+        activityRecords.push({
+          user: userId,
+          action: i % 2 === 0 ? 'completed' : 'started',
+          skillTitle: `Sample Skill Task ${i}`,
+          category: 'Development'
+        });
+      }
+      await Activity.insertMany(activityRecords);
+    }
+
+    // 7. Seed Message if empty
+    const messageCount = await Message.countDocuments();
+    if (messageCount === 0) {
+      console.log('Seeding 10 Messages...');
+      const msgRecords = [];
+      for(let i = 1; i <= 10; i++) {
+        msgRecords.push({
+          sender: userId,
+          receiver: empUser._id, // use the alex user we found/created
+          content: `This is a sample message number ${i} discussing the recent updates.`,
+          read: i % 3 === 0
+        });
+      }
+      await Message.insertMany(msgRecords);
+    }
+
+    // 8. Seed Payroll if empty
+    const payrollCount = await Payroll.countDocuments();
+    if (payrollCount === 0) {
+      console.log('Seeding 10 Payroll records...');
+      const payrollRecords = [];
+      for(let i = 1; i <= 10; i++) {
+        payrollRecords.push({
+          user: userId,
+          month: `2026-${i.toString().padStart(2, '0')}`,
+          baseSalary: 5000,
+          overtimePay: 200,
+          bonuses: i === 10 ? 1000 : 0,
+          deductions: 150,
+          netSalary: 5050 + (i === 10 ? 1000 : 0),
+          status: i < 8 ? 'paid' : 'pending',
+          paymentDate: i < 8 ? new Date(`2026-${i.toString().padStart(2, '0')}-28`) : null
+        });
+      }
+      await Payroll.insertMany(payrollRecords);
     }
 
     console.log('✅ Sample data seeded successfully! Default Admin: admin@devskills.com / admin123');

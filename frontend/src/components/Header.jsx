@@ -1,10 +1,10 @@
 import React from 'react';
-import { Search, Sparkles, Bell, Database } from 'lucide-react';
+import { Search, Sparkles, Bell, Database, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import Swal from 'sweetalert2';
 
-const Header = () => {
+const Header = ({ setIsSidebarOpen }) => {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
@@ -30,14 +30,35 @@ const Header = () => {
 
   return (
     <header className="top-header">
-      {/* Search Input */}
-      <div className="header-search">
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* Mobile Menu Toggle */}
+        <button 
+          className="mobile-menu-btn"
+          onClick={() => setIsSidebarOpen(true)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--text-main)',
+            cursor: 'pointer',
+            padding: '0.5rem',
+            marginRight: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Menu size={24} />
+        </button>
+
+        {/* Search Input */}
+        <div className="header-search">
         <Search size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
         <input 
           type="text" 
           placeholder="Global search or shortcut..." 
           onClick={() => navigate('/dashboard')}
         />
+      </div>
       </div>
 
       {/* Header Actions */}

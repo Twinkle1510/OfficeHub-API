@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -22,6 +22,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function AppLayout() {
   const token = localStorage.getItem('token');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (!token) {
     return (
@@ -38,9 +39,9 @@ function AppLayout() {
 
   return (
     <div className="app-shell">
-      <Sidebar />
+      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
       <div className="workspace-wrapper">
-        <Header />
+        <Header setIsSidebarOpen={setIsSidebarOpen} />
         <main className="workspace-content">
           <Routes>
             <Route path="/" element={<Landing />} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar, FileText, Download, ShieldCheck, Award } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const PolicyHub = () => {
   const holidays = [
@@ -65,7 +66,7 @@ const PolicyHub = () => {
 
                 <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.75rem' }}>{p.name}</h4>
 
-                <button onClick={() => alert(`Downloading ${p.name}...`)} className="btn btn-outline" style={{ width: '100%', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                <button onClick={() => Swal.fire({title: 'Downloading...', text: `Initiating download for ${p.name}`, icon: 'info'})} className="btn btn-outline" style={{ width: '100%', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
                   <Download size={14} /> Download PDF Document
                 </button>
               </div>
