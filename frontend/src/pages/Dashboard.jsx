@@ -204,7 +204,7 @@ const Dashboard = () => {
             <Target size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--violet)', fontFamily: 'Outfit, sans-serif' }}>${isHRorAdmin ? analytics?.totalPayrollExpense?.toLocaleString() || 0 : analytics?.lastNetSalary?.toLocaleString() || 0}</div>
+            <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--violet)', fontFamily: 'Outfit, sans-serif' }}>{isHRorAdmin ? analytics?.totalPayrollExpense?.toLocaleString() || 0 : analytics?.lastNetSalary?.toLocaleString() || 0}</div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{isHRorAdmin ? 'Monthly Payroll' : 'Last Net Pay'}</div>
           </div>
         </div>

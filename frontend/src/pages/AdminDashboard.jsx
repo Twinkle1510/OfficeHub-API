@@ -232,7 +232,7 @@ const AdminDashboard = () => {
       });
       setPayrolls([res.data.data, ...payrolls]);
       setPayrollForm({ userId: '', month: '2026-08', baseSalary: '', bonuses: '0', deductions: '0' });
-      Swal.fire('Payroll Processed!', `Net Salary: $${res.data.data.netSalary}`, 'success');
+      Swal.fire('Payroll Processed!', `Net Salary: ${res.data.data.netSalary}`, 'success');
     } catch (err) {
       console.error(err);
       Swal.fire('Error', 'Failed to process payroll', 'error');
@@ -327,7 +327,7 @@ const AdminDashboard = () => {
             <DollarSign size={22} />
           </div>
           <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 800 }}>${totalPayrollDisbursed.toLocaleString()}</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800 }}>{totalPayrollDisbursed.toLocaleString()}</div>
             <div style={{ fontSize: '0.775rem', color: 'var(--text-muted)' }}>Payroll Disbursed</div>
           </div>
         </div>

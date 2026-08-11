@@ -57,7 +57,7 @@ const PayrollManagement = () => {
       setAllPayrolls([res.data.data, ...allPayrolls]);
       setIsGenerating(false);
       setForm({ userId: '', month: '2026-08', baseSalary: '', bonuses: '0', deductions: '0' });
-      Swal.fire('Payroll Processed!', `Net Salary: $${res.data.data.netSalary} (Includes Overtime calculations)`, 'success');
+      Swal.fire('Payroll Processed!', `Net Salary: ${res.data.data.netSalary} (Includes Overtime calculations)`, 'success');
     } catch (err) {
       console.error(err);
       Swal.fire('Error', err.response?.data?.error || 'Failed to process payroll', 'error');
@@ -134,7 +134,7 @@ const PayrollManagement = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Base Salary ($)</label>
+              <label className="form-label">Base Salary</label>
               <input 
                 type="number" 
                 className="form-input"
@@ -146,7 +146,7 @@ const PayrollManagement = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Performance Bonus ($)</label>
+              <label className="form-label">Performance Bonus</label>
               <input 
                 type="number" 
                 className="form-input"
@@ -157,7 +157,7 @@ const PayrollManagement = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Deductions / Tax ($)</label>
+              <label className="form-label">Deductions / Tax</label>
               <input 
                 type="number" 
                 className="form-input"
@@ -210,10 +210,10 @@ const PayrollManagement = () => {
                     <tr key={p._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       <td style={{ padding: '0.9rem 0', fontWeight: 600 }}>{p.user?.name || 'Employee'}</td>
                       <td style={{ padding: '0.9rem 0', color: 'var(--primary)', fontWeight: 700 }}>{p.month}</td>
-                      <td style={{ padding: '0.9rem 0' }}>${p.baseSalary}</td>
-                      <td style={{ padding: '0.9rem 0', color: 'var(--amber)' }}>+${p.overtimePay}</td>
-                      <td style={{ padding: '0.9rem 0', color: 'var(--emerald)' }}>+${p.bonuses}</td>
-                      <td style={{ padding: '0.9rem 0', fontWeight: 800, color: '#fff', fontSize: '1rem' }}>${p.netSalary}</td>
+                      <td style={{ padding: '0.9rem 0' }}>{p.baseSalary}</td>
+                      <td style={{ padding: '0.9rem 0', color: 'var(--amber)' }}>+{p.overtimePay}</td>
+                      <td style={{ padding: '0.9rem 0', color: 'var(--emerald)' }}>+{p.bonuses}</td>
+                      <td style={{ padding: '0.9rem 0', fontWeight: 800, color: '#fff', fontSize: '1rem' }}>{p.netSalary}</td>
                       <td style={{ padding: '0.9rem 0' }}>
                         <span className="status-pill completed">PAID</span>
                       </td>
@@ -253,23 +253,23 @@ const PayrollManagement = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Base Salary:</span>
-                    <span>${s.baseSalary}</span>
+                    <span>{s.baseSalary}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--amber)' }}>
                     <span>Overtime Pay:</span>
-                    <span>+${s.overtimePay}</span>
+                    <span>+{s.overtimePay}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--emerald)' }}>
                     <span>Bonus:</span>
-                    <span>+${s.bonuses}</span>
+                    <span>+{s.bonuses}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--rose)' }}>
                     <span>Deductions:</span>
-                    <span>-${s.deductions}</span>
+                    <span>-{s.deductions}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-light)', paddingTop: '0.6rem', marginTop: '0.4rem', fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>
                     <span>Net Paid:</span>
-                    <span style={{ color: 'var(--emerald)' }}>${s.netSalary}</span>
+                    <span style={{ color: 'var(--emerald)' }}>{s.netSalary}</span>
                   </div>
                 </div>
 
