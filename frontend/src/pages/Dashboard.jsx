@@ -145,55 +145,13 @@ const Dashboard = () => {
   return (
     <div className="animate-fade-in">
       
-      {/* Admin Executive Switcher Banner */}
-      {isHRorAdmin && (
-        <div style={{
-          background: 'var(--gradient-primary)',
-          borderRadius: '16px',
-          padding: '1rem 1.5rem',
-          marginBottom: '1.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          color: '#fff',
-          boxShadow: '0 8px 25px -5px rgba(99, 102, 241, 0.4)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '10px', display: 'flex' }}>
-              <Shield size={22} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '1rem' }}>👑 Executive {currentUser?.role?.toUpperCase()} Mode Active</div>
-              <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>You have full access to company payroll, role management, asset tracking, and HR approvals.</div>
-            </div>
-          </div>
 
-          <button 
-            onClick={() => navigate('/admin')} 
-            style={{
-              background: '#fff',
-              color: 'var(--bg-main)',
-              border: 'none',
-              padding: '0.55rem 1.1rem',
-              borderRadius: '10px',
-              fontWeight: 800,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem'
-            }}
-          >
-            Open Admin Panel <ArrowRight size={16} />
-          </button>
-        </div>
-      )}
 
       {/* Workspace Dashboard Header */}
       <div className="dashboard-header" style={{ marginBottom: '1.5rem' }}>
         <div>
           <h1 className="dashboard-title">
-            Company Dashboard <span className="text-gradient">📊</span>
+            Company Dashboard <span style={{ fontSize: '1.8rem', verticalAlign: 'middle' }}>📊</span>
           </h1>
           <p className="dashboard-subtitle">Overview of your tasks, velocity, and company updates.</p>
         </div>
